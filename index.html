@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#101c2e">
+  <meta name="description" content="Dashboard Monitoring Nasional Loss Prevention">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icons/icon-192.png">
+  <link rel="apple-touch-icon" href="./icons/icon-192.png">
+  <title>Monitoring LP</title>
+  <style>
+    *{box-sizing:border-box}
+    html,body{margin:0;width:100%;height:100%;background:#0b1220;font-family:Arial,sans-serif;overflow:hidden}
+    .app{height:100%;height:100dvh;display:flex;flex-direction:column}
+    .bar{height:42px;flex:0 0 42px;background:linear-gradient(110deg,#101c2e,#164454 65%,#087f79);color:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 12px;font-size:12px;font-weight:700;letter-spacing:.3px}
+    .brand{display:flex;align-items:center;gap:8px}
+    .dot{width:9px;height:9px;border-radius:50%;background:#39c98a;box-shadow:0 0 8px #39c98a}
+    #install{display:none;border:0;border-radius:7px;padding:7px 10px;background:#f2c96d;color:#182536;font-weight:800}
+    iframe{border:0;display:block;width:100%;height:calc(100% - 42px);background:#0b1220}
+    .notice{position:absolute;left:12px;right:12px;bottom:14px;background:#172a40;color:#fff;border:1px solid #45627f;border-radius:10px;padding:12px;font-size:13px;display:none;box-shadow:0 8px 24px #0008}
+    .notice button{margin-left:8px;background:#22c6b2;border:0;border-radius:6px;padding:7px 10px;font-weight:bold}
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="bar">
+      <div class="brand"><span class="dot"></span><span>NASIONAL LOSS PREVENTION · MONITORING</span></div>
+      <button id="install" type="button">Pasang APP</button>
+    </header>
+    <iframe id="dashboard" title="Dashboard Monitoring LP" src="https://script.google.com/macros/s/AKfycbxt0GVYu6Dqa-_xTfKA6NAuKQ6qJ8uA9lkU9BBa__2XABpu6p94dDAAJdC1p9WpnhgZ/exec" allow="clipboard-read; clipboard-write"></iframe>
+  </main>
+  <div class="notice" id="notice">Jika dashboard meminta login, masuk menggunakan akun Google yang memiliki akses. <button id="reload" type="button">Muat ulang</button></div>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(console.error));
+    }
+    let installPrompt;
+    const installButton = document.getElementById('install');
+    window.addEventListener('beforeinstallprompt', (event) => {
+      event.preventDefault(); installPrompt = event; installButton.style.display = 'block';
+    });
+    installButton.addEventListener('click', async () => {
+      if (!installPrompt) return;
+      installPrompt.prompt(); await installPrompt.userChoice; installPrompt = null;
+      installButton.style.display = 'none';
+    });
+    document.getElementById('reload').addEventListener('click', () => document.getElementById('dashboard').src = 'https://script.google.com/macros/s/AKfycbxt0GVYu6Dqa-_xTfKA6NAuKQ6qJ8uA9lkU9BBa__2XABpu6p94dDAAJdC1p9WpnhgZ/exec');
+    document.getElementById('dashboard').addEventListener('error', () => document.getElementById('notice').style.display = 'block');
+  </script>
+</body>
+</html>
